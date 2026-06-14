@@ -1,13 +1,33 @@
-# Credentials and secrets — never commit these
+# Secrets and local credentials
+.secrets
+.secrets.*
+.env
+.env.*
 **/.credentials.json
 **/auth.json
-**/.env
 **/*.key
+**/*.pem
 
-# Runtime / cache noise
+# Shell/runtime state that does not travel between machines
+.config/fish/fish_variables
+.zcompdump*
+.zsh_history
+.bash_history
+.lesshst
+
+# Editor and OS noise
+.DS_Store
+.Trashes
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Runtime/cache noise
 **/*.sqlite
 **/*.sqlite-shm
 **/*.sqlite-wal
+**/*.log
 **/backups/
 **/cache/
 **/sessions/
@@ -16,7 +36,6 @@
 **/file-history/
 **/blobs/
 **/puppeteer/
-**/*.log
 **/daemon.*
 **/daemon/
 **/install-id

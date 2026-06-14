@@ -1,68 +1,71 @@
 # my_dots
 
-Personal dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/).
+Portable home-directory dotfiles for new Linux and macOS desktops.
+
+This repo mirrors `$HOME` directly, like `~/.zshrc`, `~/.config/fish/config.fish`, and `~/.codex/config.toml`. The installer links those files into place and backs up any existing destination as `*.backup.TIMESTAMP`.
 
 ## Layout
 
-Each top-level directory is a Stow package. Stow symlinks its contents into `$HOME`, so `fish/.config/fish/config.fish` becomes `~/.config/fish/config.fish`.
-
-| Package | Contents |
+| Path | Purpose |
 |---|---|
-| `shell` | `.zshrc`, `.zshenv`, `.bashrc`, `.bash_profile`, `.profile` |
-| `fish` | Fish shell config, `conf.d/`, `fish_plugins`, `fish_variables` |
-| `alacritty` | Alacritty terminal config (Nord colors, 80% opacity) |
-| `git` | `.gitconfig`, global `.config/git/ignore` |
-| `gtk` | GTK 3/4 `settings.ini`, `.gtkrc-2.0` (Breeze-Dark, capitaine-cursors) |
+| `.install/` | Modular fresh-machine installers. |
+| `.config/` | XDG app config: Fish, Git, GTK, Alacritty. |
+| `.shenv`, `.zshrc`, `.bashrc`, `.profile` | Portable shell startup without machine-specific `/home/...` paths. |
+| `.aliases`, `.bash_aliases` | Shared shell aliases. |
+| `.claude`, `.codex`, `.gemini`, `.omp`, `.pi` | AI/agent CLI config. |
+| `.brewfile`, `.osx` | macOS packages and defaults. |
 
-## Install
+## Fresh machine
 
 ```bash
-git clone https://github.com/theoogabear/my_dots.git ~/my_dots
-cd ~/my_dots
-bash install.sh
+bash <(curl -fsSL https://raw.githubusercontent.com/theoogabear/my_dots/main/bootstrap.sh)
 ```
 
-Requires `stow`:
+By default this clones to `~/.dotfiles`, links dotfiles, installs supported OS packages, runtimes, Fish plugins, AI CLIs, and desktop apps.
+
+Useful variants:
+
 ```bash
-# Ubuntu/Debian
-sudo apt install stow
+# Only link dotfiles; no sudo/package installs.
+bash install.sh --dotfiles-only
 
-# Arch/CachyOS
-sudo pacman -S stow
+# Link dotfiles and install runtimes, but skip OS package managers.
+bash install.sh --skip-packages
+
+# Custom clone location for bootstrap.
+DOTFILES_DIR="$HOME/src/my_dots" bash <(curl -fsSL https://raw.githubusercontent.com/theoogabear/my_dots/main/bootstrap.sh)
 ```
 
-## Ubuntu migration notes
+## Installer modules
 
-A few configs reference CachyOS-specific paths that won't exist on Ubuntu. Remove or replace these lines after installing:
+`.install/install.sh` orchestrates these modules:
 
-**`~/.config/fish/config.fish`** — remove:
+- `dotfiles.sh` links home-relative files, keeps generated Fish state local, and creates `~/.secrets` / `~/.secrets.fish`.
+- `apt-packages.sh` installs Debian/Ubuntu packages.
+- `pacman-packages.sh` installs Arch/CachyOS packages.
+- `fish.sh` installs Fisher plugins from `.config/fish/fish_plugins` and optionally switches the login shell.
+- `rust.sh`, `go.sh`, `bun.sh`, `node.sh` install language runtimes.
+- `ai-clis.sh` installs Claude Code, Codex, and Gemini CLI via npm.
+- `desktop-apps.sh` installs Linux desktop apps such as Ghostty/Zed when supported.
+- `mac.sh` runs Homebrew Bundle from `.brewfile` and applies `.osx` defaults.
+
+## Secrets
+
+Do not commit API keys. Put POSIX shell secrets in `~/.secrets`:
+
+```sh
+export GEMINI_API_KEY="..."
+```
+
+Put Fish-specific secrets in `~/.secrets.fish`:
+
 ```fish
-source /usr/share/cachyos-fish-config/cachyos-config.fish
+set -gx GEMINI_API_KEY "..."
 ```
 
-**`~/.zshrc`** — remove:
-```zsh
-source /usr/share/cachyos-zsh-config/cachyos-config.zsh
-```
-
-**`~/.config/fish/fish_variables`** — the `fish_user_paths` variable contains absolute paths (`/home/scottj/...`). Update them to match your new username/home on Ubuntu, or let Fish manage them fresh with `fish_add_path`.
-
-## Post-install
+## After install
 
 ```bash
-# Fish plugins (fisher + nvm.fish)
-fish -c 'curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher && fisher update'
-
-# Rust toolchain (restores ~/.cargo)
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-
-# Node via nvm (config defaults to v24)
-fish -c 'nvm install 24'
-
-# Alacritty (not in Ubuntu repos by default)
-sudo apt install cargo && cargo install alacritty
-# or via PPA: https://github.com/alacritty/alacritty/blob/master/INSTALL.md
-
-# GTK cursor theme used in configs
-sudo apt install capitaine-cursors
+gh auth login
+exec "$SHELL" -l
 ```

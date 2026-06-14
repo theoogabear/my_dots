@@ -1,0 +1,17 @@
+tap "homebrew/bundle"
+
+brew "bash"
+brew "fish"
+brew "git"
+brew "gh"
+brew "go"
+brew "rustup-init"
+brew "starship"
+brew "tmux"
+brew "wget"
+brew "zsh"
+brew "oven-sh/bun/bun"
+
+cask "alacritty"
+cask "ghostty"
+cask "zed"

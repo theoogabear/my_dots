@@ -1,0 +1,28 @@
+# POSIX-compatible environment shared by login and interactive shells.
+
+path_prepend() {
+    [ -d "$1" ] || return 0
+    case ":$PATH:" in
+        *":$1:"*) ;;
+        *) PATH="$1:$PATH" ;;
+    esac
+}
+
+path_prepend "$HOME/.local/bin"
+path_prepend "$HOME/.cargo/bin"
+path_prepend "$HOME/.bun/bin"
+path_prepend "$HOME/go/bin"
+path_prepend "$HOME/adk-env/bin"
+export PATH
+
+export EDITOR="${EDITOR:-nvim}"
+export VISUAL="${VISUAL:-$EDITOR}"
+export LANG="${LANG:-en_US.UTF-8}"
+
+[ -r "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+
+[ -r "$HOME/.aliases" ] && . "$HOME/.aliases"
+[ -r "$HOME/.secrets" ] && . "$HOME/.secrets"
