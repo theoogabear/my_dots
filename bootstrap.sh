@@ -131,6 +131,34 @@ else
 fi
 
 # ---------------------------------------------------------------------------
+log "Alacritty"
+# ---------------------------------------------------------------------------
+if command -v alacritty &>/dev/null; then
+    skip
+else
+    ALACRITTY_URL=$(curl -s https://api.github.com/repos/alacritty/alacritty/releases/latest \
+        | grep "browser_download_url.*Alacritty-v.*-ubuntu_24_04_amd64.deb" \
+        | cut -d'"' -f4)
+    if [ -n "$ALACRITTY_URL" ]; then
+        curl -L "$ALACRITTY_URL" -o /tmp/alacritty.deb
+        sudo dpkg -i /tmp/alacritty.deb
+        rm /tmp/alacritty.deb
+    else
+        echo "    No .deb found for this Ubuntu version — install manually or via cargo:"
+        echo "    cargo install alacritty"
+    fi
+fi
+
+# ---------------------------------------------------------------------------
+log "Zed editor"
+# ---------------------------------------------------------------------------
+if command -v zed &>/dev/null; then
+    skip
+else
+    curl -f https://zed.dev/install.sh | sh
+fi
+
+# ---------------------------------------------------------------------------
 log "Ghostty (Flatpak)"
 # ---------------------------------------------------------------------------
 if flatpak list 2>/dev/null | grep -q ghostty; then
