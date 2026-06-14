@@ -180,6 +180,32 @@ else
 fi
 
 # ---------------------------------------------------------------------------
+log "Odin programming language"
+# ---------------------------------------------------------------------------
+if command -v odin &>/dev/null; then
+    skip
+else
+    sudo apt-get install -y clang llvm
+    git clone https://github.com/odin-lang/Odin "$HOME/odin"
+    make -C "$HOME/odin" release
+    fish -c 'fish_add_path ~/odin'
+fi
+
+# ---------------------------------------------------------------------------
+log "GitLab CLI (glab)"
+# ---------------------------------------------------------------------------
+if command -v glab &>/dev/null; then
+    skip
+else
+    GLAB_URL=$(curl -s https://api.github.com/repos/gitlab-org/cli/releases/latest \
+        | grep "browser_download_url.*_linux_amd64\.deb" \
+        | cut -d'"' -f4)
+    curl -L "$GLAB_URL" -o /tmp/glab.deb
+    sudo dpkg -i /tmp/glab.deb
+    rm /tmp/glab.deb
+fi
+
+# ---------------------------------------------------------------------------
 log "Python ADK venv"
 # ---------------------------------------------------------------------------
 if [ -d "$HOME/adk-env" ]; then
