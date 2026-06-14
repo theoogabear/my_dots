@@ -141,6 +141,17 @@ else
 fi
 
 # ---------------------------------------------------------------------------
+log "Gemini CLI + Antigravity"
+# ---------------------------------------------------------------------------
+# Gemini CLI is installed via npm (done above in the AI CLIs step).
+# Antigravity is Google's separate agent CLI — install via their script.
+if command -v agy &>/dev/null; then
+    skip
+else
+    curl -sSL https://dl.google.com/antigravity/install.sh | bash
+fi
+
+# ---------------------------------------------------------------------------
 log "Python ADK venv"
 # ---------------------------------------------------------------------------
 if [ -d "$HOME/adk-env" ]; then
