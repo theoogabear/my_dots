@@ -1,0 +1,7 @@
+{
+  "lastChangelogVersion": "0.79.1",
+  "defaultProvider": "google",
+  "defaultModel": "gemini-flash-latest",
+  "defaultThinkingLevel": "medium",
+  "hideThinkingBlock": true
+}

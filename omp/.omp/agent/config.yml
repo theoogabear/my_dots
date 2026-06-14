@@ -1,0 +1,19 @@
+memory: 
+  enabled: false
+  disabledAgents: 
+    - oracle
+skills: 
+  enableClaudeUser: false
+compaction: 
+  strategy: shake
+  threshold: 0.25
+roles: 
+  default: gemini-3.5-flash-low
+  smol: gemini-3.5-flash-low
+  slow: gemini-3.5-flash-low
+symbolPreset: nerd
+theme: 
+  dark: titanium
+setupVersion: 1
+modelRoles: 
+  default: openai-codex/gpt-5.5:high

@@ -2,7 +2,7 @@
 set -euo pipefail
 
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PACKAGES=(shell fish alacritty git gtk)
+PACKAGES=(shell fish alacritty git gtk claude codex omp pi)
 
 if ! command -v stow &>/dev/null; then
     echo "GNU Stow not found. Install it first:"
